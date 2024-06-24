@@ -10,27 +10,33 @@ const {
 
 router.post('/tickets', async (req, res) => {
    try {
-      const { titulo, descripcion, id_tipo, idPrioridad, idEstado } = req.body;
+      const { titulo, descripcion, idTipo, idPrioridad, idEstado } = req.body;
       console.log(
          'Esto es POST:',
          titulo,
          descripcion,
-         id_tipo,
+         idTipo,
          idPrioridad,
          idEstado
       );
-      if (!titulo || !descripcion || !id_tipo || !idPrioridad || !idEstado) {
+      if (!titulo || !descripcion || !idTipo || !idPrioridad || !idEstado) {
          res.status(400).json({ error: 'Por favor, rellene todos los campos' });
          return;
       }
       const ticket = await crearTicket({
          titulo,
          descripcion,
-         id_tipo,
+         idTipo,
          idPrioridad,
          idEstado,
       });
-      res.json(ticket);
+      console.log(ticket);
+      // estado creado
+      const respuesta = {
+         status: 'Ticket creado',
+         msg: '',
+      };
+      res.status(201).json(ticket);
       return;
    } catch (error) {
       res.status(500).json({

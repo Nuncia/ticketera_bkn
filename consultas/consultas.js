@@ -11,29 +11,30 @@ const listarTickets = async () => {
    }
 };
 
-const crearTicket = async (
+const crearTicket = async ({
    titulo,
    descripcion,
-   id_tipo,
+   idTipo,
    idPrioridad,
-   idEstado
-) => {
-   console.log('TICKET: ', titulo, descripcion, id_tipo, idPrioridad, idEstado);
+   idEstado,
+}) => {
    try {
       const query =
-         'INSERT INTO ticket ( id, titulo, descripcion, id_tipo, fechaHora, id_prioridad, id_estado) VALUES (DEFAULT, $1, $2, $3, NOW(), $4, $5) RETURNING *';
-      const values = [
-         titulo.titulo,
-         titulo.descripcion,
-         titulo.id_tipo,
-         titulo.idPrioridad,
-         titulo.idEstado,
-      ];
-      console.log('values: ', values);
+         'INSERT INTO ticket (id, titulo, descripcion, id_tipo, fechaHora, id_prioridad, id_estado) VALUES (DEFAULT, $1, $2, $3, NOW(), $4, $5) RETURNING *;';
+      const values = [titulo, descripcion, idTipo, idPrioridad, idEstado];
       const { rowCount, rows } = await pool.query(query, values);
-      return rows;
+      const respuesta = {
+         rowCount: rowCount,
+         msg: 'Ticket creado',
+         ticket: rows[0],
+      };
+      return respuesta;
    } catch (error) {
-      console.log('Error al crear el ticket:', error);
+      const respuesta = {
+         rowCount: 0,
+         msg: error.message,
+      };
+      return respuesta;
    }
 };
 
