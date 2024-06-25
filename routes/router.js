@@ -47,9 +47,9 @@ router.post('/tickets', async (req, res) => {
 
 router.get('/tickets', async (req, res) => {
    try {
-      const tickets = await listarTickets();
-      console.log('Tickets: ', tickets);
-      res.json(tickets);
+      const { rowCount, rows, msg } = await listarTickets();
+      console.log('Tickets: ', rowCount, msg);
+      res.json(rows);
    } catch (error) {
       res.status(500).json({ error: error.message });
    }
@@ -58,7 +58,6 @@ router.get('/tickets', async (req, res) => {
 router.delete('/tickets/:id', async (req, res) => {
    try {
       const { id } = req.params;
-      console.log(id);
       const idTicket = await eliminarTicket(id);
       console.log(idTicket);
       res.json(idTicket);
@@ -67,14 +66,15 @@ router.delete('/tickets/:id', async (req, res) => {
    }
 });
 
-router.put('/ticket/id', async (req, res) => {
+router.put('/ticket/:id', async (req, res) => {
    try {
+      const { prioridad, estado } = req.body;
       const { id } = req.params;
-      console.log(id);
-      const ticketMessage = eliminarTicket(id);
-      res.json(ticketMessage);
+      console.log('PUT:', id, prioridad, estado);
+      const ticketMessage = await modificarTicket(id, prioridad, estado);
+      res.status(200).json(ticketMessage);
    } catch (error) {
-      rex.status(500).json({ error: error.message });
+      res.status(500).json({ error: error.message });
    }
 });
 

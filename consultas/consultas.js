@@ -3,11 +3,20 @@ const pool = require('../config/db');
 const listarTickets = async () => {
    try {
       const query = 'SELECT * FROM ticket';
-      const { rows } = await pool.query(query);
-      console.log('rows', rows);
-      return rows;
+      const { rows, rowCount } = await pool.query(query);
+      const respuesta = {
+         rowCount: rowCount,
+         rows,
+         msg: 'Listado de tickets',
+      };
+      return respuesta;
    } catch (error) {
-      console.log('Error al obtener los Ticket:', error);
+      const respuesta = {
+         rowCount: 0,
+         rows: [],
+         msg: `Error al obtener los Ticket: ${error.message}`,
+      };
+      return respuesta;
    }
 };
 
@@ -39,12 +48,25 @@ const crearTicket = async ({
 };
 
 const modificarTicket = async (id, prioridad, estado) => {
-   const consulta =
-      'UPDATE ticket SET prioridad = $2, estado = $3 WHERE id= 1$';
-   const values = [id, prioridad, estado];
-   const { rows } = await pool.query(consulta, values);
-   console.log(rows);
-   return rows;
+   try {
+      const consulta =
+         'UPDATE ticket SET id_prioridad = $2, id_estado = $3 WHERE id= $1 RETURNING *';
+      const values = [id, prioridad, estado];
+      console.log(values);
+      const { rowCount, rows } = await pool.query(consulta, values);
+      const respuesta = {
+         rowCount: rowCount,
+         rows: rows,
+         msg: 'Ticket modificado correctamente',
+      };
+      return respuesta;
+   } catch (error) {
+      const respuesta = {
+         rowCount: 0,
+         rows: [],
+         msg: error.message,
+      };
+   }
 };
 
 const eliminarTicket = async (id) => {
@@ -55,22 +77,21 @@ const eliminarTicket = async (id) => {
       const { rowCount, rows } = await pool.query(consulta, values);
       console.log(rows);
       const respuesta = {
-         affectedRows: rowCount,
-         rows,
+         rowCount: rowCount,
+         rows: rows,
          message: 'Ticket eliminado correctamente',
       };
       return respuesta;
    } catch (error) {
       const respuesta = {
-         affectedRows: 0,
-         rows: [],
+         rowCount: 0,
          message: error.message,
       };
       return respuesta;
    }
 };
 
-// crearTicket('Ticket de', 'prueba', 1, 2, 3);
+modificarTicket(5, 1, 3);
 
 module.exports = {
    listarTickets,
