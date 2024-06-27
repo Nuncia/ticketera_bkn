@@ -2,6 +2,7 @@ const pool = require('../config/db');
 
 const listarTickets = async () => {
    try {
+      // console.log('Consultando tickets...');
       const query = 'SELECT * FROM ticket';
       const { rows, rowCount } = await pool.query(query);
       const respuesta = {
@@ -78,7 +79,7 @@ const eliminarTicket = async (id) => {
       console.log(rows);
       const respuesta = {
          rowCount: rowCount,
-         rows: rows,
+         rows: rows.id,
          message: 'Ticket eliminado correctamente',
       };
       return respuesta;
@@ -91,11 +92,25 @@ const eliminarTicket = async (id) => {
    }
 };
 
-modificarTicket(5, 1, 3);
+const buscarTicket = async (id) => {
+   try {
+      console.log(id);
+      const query = 'SELECT * FROM ticket WHERE id = $1';
+      const { rows } = await pool.query(query, [id]);
+      if (rows.length === 0) {
+         return next();
+      } else {
+         return next('Ticket no existe en la base de datos');
+      }
+   } catch (error) {
+      next(error);
+   }
+};
 
 module.exports = {
    listarTickets,
    crearTicket,
    modificarTicket,
    eliminarTicket,
+   buscarTicket,
 };
