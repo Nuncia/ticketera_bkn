@@ -1,5 +1,8 @@
-const { buscarTicket } = require('../consultas/consultas');
+// middlewares\index.js
+const pool = require('../config/db');
+// const { buscarTicket } = require('../consultas/consultas');
 
+// Verifica que los campos titulo, descripcion, idTipo, idPrioridad e idEstado esten presentes en la solicitud. Si falta algun campo responde error 400. Si todos estan presentes, llama a next()
 const validarPost = (req, res, next) => {
    try {
       const { titulo, descripcion, idTipo, idPrioridad, idEstado } = req.body;
@@ -15,6 +18,7 @@ const validarPost = (req, res, next) => {
    }
 };
 
+// Verifica la existencia de un ticket dado un ID.
 const validarTicket = async (req, res, next) => {
    try {
       const { id } = req.params;
@@ -25,7 +29,23 @@ const validarTicket = async (req, res, next) => {
          next();
       }
    } catch (error) {
-      next(error);
+      return error;
+   }
+};
+
+// Funcion para buscar un ticket.
+// Busca un ticket con el ID proporcionado. Devuelve null si no se encuentra el ticket y si lo encuentra lo devuelve.
+const buscarTicket = async (id) => {
+   try {
+      const query = 'SELECT * FROM ticket WHERE id = $1';
+      const { rows, rowCount } = await pool.query(query, [id]);
+      if (rows.length !== 0) {
+         return rows[0];
+      } else {
+         return null;
+      }
+   } catch (error) {
+      return error;
    }
 };
 
