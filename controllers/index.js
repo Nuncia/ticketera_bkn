@@ -66,9 +66,11 @@ const borrarTicket = async (req, res) => {
 // Controlador para modificar un ticket. Llama a la función modificarTicket para modificar el ticket de la base de datos. Devuelve el ticket modificado.
 const editarTicket = async (req, res) => {
    try {
-      const { idPrioridad, idEstado } = req.body;
+      // console.log(req.body);
+      const { prioridad, estado } = req.body;
       const { id } = req.params;
-      const ticketMessage = await modificarTicket(id, idPrioridad, idEstado);
+      // console.log('editarTicket: ', req.body, prioridad, estado);
+      const ticketMessage = await modificarTicket(id, prioridad, estado);
       res.status(200).json(ticketMessage);
    } catch (error) {
       res.status(500).json({ error: error.message });

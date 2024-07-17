@@ -23,6 +23,7 @@ const validarTicket = async (req, res, next) => {
    try {
       const { id } = req.params;
       const ticket = await buscarTicket(id);
+      // console.log('validarTicket: ', ticket);
       if (!ticket) {
          return res.status(404).json({ error: 'Ticket no encontrado' });
       } else {
