@@ -1,6 +1,5 @@
 // middlewares\index.js
 const pool = require('../config/db');
-// const { buscarTicket } = require('../consultas/consultas');
 
 // Verifica que los campos titulo, descripcion, idTipo, idPrioridad e idEstado esten presentes en la solicitud. Si falta algun campo responde error 400. Si todos estan presentes, llama a next()
 const validarPost = (req, res, next) => {
@@ -23,7 +22,6 @@ const validarTicket = async (req, res, next) => {
    try {
       const { id } = req.params;
       const ticket = await buscarTicket(id);
-      // console.log('validarTicket: ', ticket);
       if (!ticket) {
          return res.status(404).json({ error: 'Ticket no encontrado' });
       } else {

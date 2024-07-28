@@ -9,16 +9,7 @@ const {
 //Controlador para registrar un nuevo ticket. Recibe los datos del body, llama la función crearTicket y los inserta en la base de datos. Devuelve los datos del ticket y un mensaje.
 const registrarTicket = async (req, res) => {
    try {
-      console.log(req.body);
       const { titulo, descripcion, idTipo, idPrioridad, idEstado } = req.body;
-      console.log(
-         'descripcion: ',
-         titulo,
-         descripcion,
-         idTipo,
-         idPrioridad,
-         idEstado
-      );
       const ticket = await crearTicket(
          titulo,
          descripcion,
@@ -55,8 +46,7 @@ const mostrarTickets = async (req, res) => {
 const borrarTicket = async (req, res) => {
    try {
       const { id } = req.params;
-      const { respuesta } = await eliminarTicket(id);
-      console.log('DELETE', respuesta);
+      const respuesta = await eliminarTicket(id);
       return res.status(200).json(respuesta);
    } catch (error) {
       res.status(500).json({ error: error.message });
@@ -66,10 +56,8 @@ const borrarTicket = async (req, res) => {
 // Controlador para modificar un ticket. Llama a la función modificarTicket para modificar el ticket de la base de datos. Devuelve el ticket modificado.
 const editarTicket = async (req, res) => {
    try {
-      // console.log(req.body);
       const { prioridad, estado } = req.body;
       const { id } = req.params;
-      // console.log('editarTicket: ', req.body, prioridad, estado);
       const ticketMessage = await modificarTicket(id, prioridad, estado);
       res.status(200).json(ticketMessage);
    } catch (error) {
