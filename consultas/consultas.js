@@ -65,7 +65,6 @@ const modificarTicket = async (id, prioridad, estado) => {
          rows,
          msg: 'Ticket modificado correctamente',
       };
-      console.log(respuesta);
       return respuesta;
    } catch (error) {
       const respuesta = {
